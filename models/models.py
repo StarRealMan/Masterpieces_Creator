@@ -13,7 +13,7 @@ class DownSampleBlock(nn.Module):
         self.main = nn.Sequential(
             nn.Conv2d(in_channel, out_channel, 4, 2, 1, bias=False),
             nn.BatchNorm2d(out_channel),
-            nn.LeakyReLU(0.2, inplace=True),
+            nn.LeakyReLU(0.2),
         )
     
     def forward(self, input):
@@ -30,7 +30,7 @@ class UpSampleBlock(nn.Module):
         self.main = nn.Sequential(
             nn.ConvTranspose2d(in_channel, out_channel, 4, 2, 1, bias=False),
             nn.BatchNorm2d(out_channel),
-            nn.ReLU(True),
+            nn.ReLU(),
         )
     
     def forward(self, input):
@@ -45,7 +45,7 @@ class Generator(nn.Module):
 
         self.startconv = nn.Sequential(
             nn.Conv2d(nc, ngf, 7, 1, 3, bias = False),
-            nn.LeakyReLU(0.2, inplace=True),
+            nn.LeakyReLU(0.2),
         )
         
         self.DownSampleList = nn.ModuleList()
@@ -73,6 +73,7 @@ class Generator(nn.Module):
 
     def forward(self, input):
         x = self.startconv(input)
+        self.down_result_list.clear()
 
         for depth_num  in range(len(self.DownSampleList)):
             net = self.DownSampleList[depth_num]
@@ -97,7 +98,7 @@ class Discriminator(nn.Module):
 
         self.startconv = nn.Sequential(
             nn.Conv2d(nc, ndf, 4, 2, 1, bias=False),
-            nn.LeakyReLU(0.2, inplace=True),
+            nn.LeakyReLU(0.2),
         )
 
         self.endconv = nn.Sequential(
@@ -124,6 +125,13 @@ class Discriminator(nn.Module):
 
         return output.view(-1, 1).squeeze(1)
 
+def weight_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        nn.init.normal_(m.weight.data, 0.0, 0.02)
+    elif classname.find('Instance') != -1:
+        nn.init.normal_(m.weight.data, 1.0, 0.02)
+        nn.init.constant_(m.bias.data, 0)
 
 if __name__ == "__main__":
 

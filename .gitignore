@@ -131,4 +131,5 @@ dmypy.json
 # User Specific
 /data
 /log
-/model/pretrainedModel
+/models/model_D
+/models/model_G
