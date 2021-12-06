@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# User Specific
+/data
+/log
+/model/pretrainedModel
