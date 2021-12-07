@@ -1,5 +1,3 @@
-import copy
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -53,7 +51,7 @@ class Generator(nn.Module):
         down_channel_list = []
         for depth_num in range(self.depth ):
             downSample = DownSampleBlock(channel)
-            down_channel_list.append(copy.deepcopy(channel))
+            down_channel_list.append(channel)
             channel = channel * 2
             self.DownSampleList.append(downSample)
 
