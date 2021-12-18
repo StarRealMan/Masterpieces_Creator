@@ -10,16 +10,16 @@ import itertools
 import utils.dataset as mydataset
 import models.models as mymodel
 
-arg_batchsize =  4
+arg_batchsize = 4
 arg_workers = 8
 arg_epochs = 50
 arg_lr = 2e-4
 arg_b1 = 0.5
 arg_b2 = 0.999
-arg_layer_depth = 24
+arg_layer_depth = 32
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-torch.cuda.set_device(1)
+torch.cuda.set_device(3)
 
 # Define Generator
 # monet -> photo
@@ -103,7 +103,7 @@ for epoch in range(arg_epochs):
                         GAN_LOSS(pred_fake_B, torch.ones_like(pred_fake_B))
         G_Cycle_loss = Cycle_LOSS(A2B2A, A) + Cycle_LOSS(B2A2B, B)
         G_identity_loss = Identity_LOSS(netG_A(B), B) + Identity_LOSS(netG_B(A), A)
-        G_loss = G_GAN_loss + 10 * G_Cycle_loss + 5 * G_identity_loss
+        G_loss = G_GAN_loss + 10 * G_Cycle_loss #+ 5 * G_identity_loss
 
         netG_optim.zero_grad()
         G_loss.backward()
